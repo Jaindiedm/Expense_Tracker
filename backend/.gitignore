@@ -35,8 +35,8 @@ build/
 # Maven compiled output
 target/
 
-# Application secrets
-backend/src/main/resources/application.properties
+# Application secret
+src/main/resources/application.properties
 
 # Node modules
 node_modules/
