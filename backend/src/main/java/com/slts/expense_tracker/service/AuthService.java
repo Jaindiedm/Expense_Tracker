@@ -36,7 +36,6 @@ public class AuthService {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setAddress(request.getAddress());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         // Save user to database

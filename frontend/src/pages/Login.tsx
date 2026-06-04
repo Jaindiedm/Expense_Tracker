@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
@@ -34,19 +34,20 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center py-12 px-4">
+      {/* Login Card */}
+      <div className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.015)] border border-slate-100 p-12 w-full max-w-[420px] flex flex-col">
+        {/* Title & Subtitle */}
+        <h1 className="text-2xl font-bold text-slate-800 text-center tracking-tight">
+          Login to ExpenseTrack
+        </h1>
+        <p className="text-slate-400 text-xs text-center mt-1.5 mb-8">
+          Please enter your credentials to log in.
+        </p>
 
-        {/* Title */}
-        <div className="text-center mb-8">
-          <div className="text-4xl mb-3">💰</div>
-          <h1 className="text-2xl font-bold text-gray-800">Welcome Back</h1>
-          <p className="text-gray-500 text-sm mt-1">Sign in to your expense tracker</p>
-        </div>
-
-        {/* Error box — only shows when error exists */}
+        {/* Error box */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4 text-sm">
+          <div className="bg-rose-50 border border-rose-100 text-rose-600 px-3.5 py-2.5 rounded-lg mb-5 text-xs text-center font-medium">
             {error}
           </div>
         )}
@@ -54,42 +55,43 @@ export default function Login() {
         {/* Login form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              placeholder="Email"
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="w-full px-4 py-3 bg-[#f5edea] focus:bg-white text-slate-700 placeholder-slate-400 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#e0569c]/30 border-0 transition duration-150"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="Password"
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={loading}
+              className="w-full px-4 py-3 bg-[#f5edea] focus:bg-white text-slate-700 placeholder-slate-400 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#e0569c]/30 border-0 transition duration-150"
             />
           </div>
 
-          {/* Disabled while loading */}
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 rounded-lg text-sm transition"
+            className="w-full bg-[#6f3b28] hover:bg-[#5d3120] disabled:bg-[#ab9086] text-white font-medium py-3.5 rounded-lg text-sm transition duration-150 cursor-pointer mt-2"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Submitting...' : 'Submit'}
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
+        {/* Create account link */}
+        <p className="text-center text-xs text-slate-400 mt-8">
           Don't have an account?{' '}
-          <Link to="/register" className="text-blue-600 hover:underline font-medium">
+          <Link to="/register" className="text-[#6f3b28] hover:underline font-semibold transition">
             Create one
           </Link>
         </p>

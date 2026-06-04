@@ -20,9 +20,6 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
     private String password;
 
     @Column(name = "created_at")

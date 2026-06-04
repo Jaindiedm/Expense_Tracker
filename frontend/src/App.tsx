@@ -3,6 +3,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
+import Expenses from './pages/Expenses';
+import Income from './pages/Income';
 
 function App() {
 
@@ -13,6 +15,12 @@ function App() {
 
       {/* Protected routes — redirects to /login if not authenticated */}
       <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/expenses" element={<ProtectedRoute><Expenses /></ProtectedRoute>} />
+      <Route path="/income" element={<ProtectedRoute><Income /></ProtectedRoute>} />
+
+      {/* Catch-all route to redirect unknown paths to dashboard */}
+      <Route path="*" element={<Navigate to="/" />} />
+
     </Routes>
 
   )
