@@ -15,7 +15,7 @@ interface AuthContextType {
   loading: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType | null>(null);
 
 // Wrap entire app with this so all pages can access user info
 export function AuthProvider({ children }: { children: ReactNode }) {
