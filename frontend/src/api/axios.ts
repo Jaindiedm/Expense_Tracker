@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Base URL points to Spring Boot backend
+// Use environment variable for API URL — works both locally and in Docker
 const api = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
 });
 
 // Automatically attach JWT token to every request
@@ -14,7 +14,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// If token expired or invalid, logout and redirect to login
+// If token expired or invalid — logout and redirect to login
 api.interceptors.response.use(
   (response) => response,
   (error) => {

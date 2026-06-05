@@ -1,0 +1,26 @@
+.env
+
+# Java
+*.class
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# Node
+node_modules/
+dist/
+.vite
+
+
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Logs
+*.log
