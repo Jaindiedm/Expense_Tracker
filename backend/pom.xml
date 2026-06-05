@@ -99,6 +99,18 @@
     		<artifactId>jjwt-jackson</artifactId>
     		<version>0.11.5</version>
 		</dependency>
+		<!-- H2 in-memory database for tests — no MySQL needed during testing -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+    		<artifactId>h2</artifactId>
+    		<scope>test</scope>
+		</dependency>
+		<!-- Mockito for mocking dependencies in unit tests -->
+		<dependency>
+    		<groupId>org.mockito</groupId>
+    		<artifactId>mockito-core</artifactId>
+    		<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
