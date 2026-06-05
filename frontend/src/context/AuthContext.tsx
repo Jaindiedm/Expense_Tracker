@@ -22,11 +22,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // On app load, check if token exists in localStorage (persists refresh)
+  // On app load, check if token exists in sessionStorage (persists refresh)
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const name = localStorage.getItem('name');
-    const email = localStorage.getItem('email');
+    const token = sessionStorage.getItem('token');
+    const name = sessionStorage.getItem('name');
+    const email = sessionStorage.getItem('email');
     if (token && name && email) {
       setUser({ token, name, email });
     }
@@ -35,17 +35,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Save token and user info after login
   const login = (data: User) => {
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('name', data.name);
-    localStorage.setItem('email', data.email);
+    sessionStorage.setItem('token', data.token);
+    sessionStorage.setItem('name', data.name);
+    sessionStorage.setItem('email', data.email);
     setUser(data);
   };
 
   // Clear everything on logout
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('name');
-    localStorage.removeItem('email');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('name');
+    sessionStorage.removeItem('email');
     setUser(null);
   };
 

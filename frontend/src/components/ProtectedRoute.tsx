@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
 
-  // Wait until localStorage is checked before deciding
+  // Wait until sessionStorage is checked before deciding
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">

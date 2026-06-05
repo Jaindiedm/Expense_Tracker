@@ -119,43 +119,123 @@ export default function Expenses() {
     }
   };
 
-  // Color badge for each category
-  const categoryColor: Record<string, string> = {
-    FOOD: "bg-orange-100 text-orange-700",
-    TRANSPORT: "bg-blue-100 text-blue-700",
-    BILLS: "bg-red-100 text-red-700",
-    SHOPPING: "bg-pink-100 text-pink-700",
-    ENTERTAINMENT: "bg-purple-100 text-purple-700",
-    OTHER: "bg-gray-100 text-gray-700",
+  // Helper to determine if a date is in the current year/month
+  const isCurrentMonth = (dateStr: string) => {
+    if (!dateStr) return false;
+    const [year, month] = dateStr.split('-');
+    const now = new Date();
+    const currentYear = String(now.getFullYear());
+    const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+    return year === currentYear && month === currentMonth;
   };
 
+  // Sort expenses by date descending
+  const sortedExpenses = [...expenses].sort((a, b) =>
+    b.transactionDate.localeCompare(a.transactionDate)
+  );
+
+  const thisMonthExpenses = sortedExpenses.filter((e) => isCurrentMonth(e.transactionDate));
+  const lastMonthsExpenses = sortedExpenses.filter((e) => !isCurrentMonth(e.transactionDate));
+
+  // Color badge for each category
+  const categoryColor: Record<string, string> = {
+    FOOD: "bg-orange-50 text-orange-600 border border-orange-100",
+    TRANSPORT: "bg-blue-50 text-blue-600 border border-blue-100",
+    BILLS: "bg-red-50 text-red-600 border border-red-100",
+    SHOPPING: "bg-pink-50 text-pink-600 border border-pink-100",
+    ENTERTAINMENT: "bg-purple-50 text-purple-600 border border-purple-100",
+    OTHER: "bg-slate-100 text-slate-700 border border-slate-200",
+  };
+
+  const renderTable = (list: Expense[]) => (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-slate-400 font-bold uppercase tracking-wider text-xs border-b border-slate-100">
+              <th className="px-6 py-4">Title</th>
+              <th className="px-6 py-4">Category</th>
+              <th className="px-6 py-4">Date</th>
+              <th className="px-6 py-4 text-right">Amount</th>
+              <th className="px-6 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-50">
+            {list.map((expense) => (
+              <tr
+                key={expense.id}
+                className="hover:bg-slate-50 transition-colors"
+              >
+                <td className="px-6 py-4 font-semibold text-slate-700">
+                  {expense.title}
+                </td>
+                <td className="px-6 py-4">
+                  {/* Colored category badge */}
+                  <span
+                    className={`px-2.5 py-1 rounded-full text-xs font-semibold ${categoryColor[expense.category]}`}
+                  >
+                    {expense.category}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-slate-400">
+                  {expense.transactionDate}
+                </td>
+                <td className="px-6 py-4 text-right font-bold text-rose-500 tabular-nums">
+                  Rs. {Number(expense.amount).toFixed(2)}
+                </td>
+                <td className="px-6 py-4 text-right space-x-3">
+                  {/* Edit button */}
+                  <button
+                    onClick={() => handleEdit(expense)}
+                    className="text-[#1a6b4a] hover:text-[#15543a] text-xs font-semibold transition-colors duration-200"
+                  >
+                    Edit
+                  </button>
+                  {/* Delete button */}
+                  <button
+                    onClick={() => handleDelete(expense.id)}
+                    className="text-rose-500 hover:text-rose-700 text-xs font-semibold transition-colors duration-200"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f6f7fb]">
       <Navbar />
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        {/* Page header */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Expenses</h1>
+      <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
+        {/* Page Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-200/60">
+          <div>
+            <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">Expenses</h1>
+            <p className="text-sm text-slate-400 mt-1">Track, edit, and organize your outgoing payments.</p>
+          </div>
           <button
             onClick={handleAddNew}
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+            className="bg-[#1a6b4a] hover:bg-[#15543a] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition duration-200"
           >
             + Add Expense
           </button>
         </div>
-
         {/* Error message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4 text-sm">
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">
             {error}
           </div>
         )}
 
         {/* Add / Edit Form — only shown when showForm is true */}
         {showForm && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <h2 className="text-lg font-semibold text-slate-800 mb-4">
               {editingId ? "Edit Expense" : "Add New Expense"}
             </h2>
 
@@ -165,7 +245,7 @@ export default function Expenses() {
             >
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">
                   Title
                 </label>
                 <input
@@ -174,20 +254,20 @@ export default function Expenses() {
                   onChange={handleChange}
                   placeholder="e.g. Lunch"
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a6b4a] focus:border-[#1a6b4a] transition duration-200"
                 />
               </div>
 
               {/* Category dropdown */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">
                   Category
                 </label>
                 <select
                   name="category"
                   value={form.category}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a6b4a] focus:border-[#1a6b4a] transition duration-200"
                 >
                   {CATEGORIES.map((cat) => (
                     <option key={cat} value={cat}>
@@ -199,7 +279,7 @@ export default function Expenses() {
 
               {/* Amount */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">
                   Amount (Rs.)
                 </label>
                 <input
@@ -211,13 +291,13 @@ export default function Expenses() {
                   onChange={handleChange}
                   placeholder="500.00"
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a6b4a] focus:border-[#1a6b4a] transition duration-200"
                 />
               </div>
 
               {/* Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">
                   Date
                 </label>
                 <input
@@ -226,13 +306,13 @@ export default function Expenses() {
                   value={form.transactionDate}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a6b4a] focus:border-[#1a6b4a] transition duration-200"
                 />
               </div>
 
               {/* Note — spans full width */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">
                   Note (optional)
                 </label>
                 <textarea
@@ -241,22 +321,22 @@ export default function Expenses() {
                   onChange={handleChange}
                   placeholder="Any additional details..."
                   rows={2}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a6b4a] focus:border-[#1a6b4a] transition duration-200"
                 />
               </div>
 
               {/* Form buttons */}
-              <div className="md:col-span-2 flex gap-3">
+              <div className="md:col-span-2 flex gap-3 mt-2">
                 <button
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-6 py-2 rounded-lg transition"
+                  className="bg-[#1a6b4a] hover:bg-[#15543a] text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition duration-200"
                 >
                   {editingId ? "Update" : "Save"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-6 py-2 rounded-lg transition"
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold px-6 py-2.5 rounded-xl transition duration-200"
                 >
                   Cancel
                 </button>
@@ -265,70 +345,44 @@ export default function Expenses() {
           </div>
         )}
 
-        {/* Expenses list */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-          {loading ? (
-            <p className="text-gray-400 text-sm p-6">Loading...</p>
-          ) : expenses.length === 0 ? (
-            <p className="text-gray-400 text-sm p-6">
+        {/* Grouped list of expenses */}
+        {loading ? (
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <p className="text-slate-400 text-sm">Loading...</p>
+          </div>
+        ) : expenses.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+            <p className="text-slate-400 text-sm">
               No expenses yet. Click + Add Expense to start.
             </p>
-          ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-gray-500 border-b border-gray-100">
-                  <th className="px-6 py-4">Title</th>
-                  <th className="px-6 py-4">Category</th>
-                  <th className="px-6 py-4">Date</th>
-                  <th className="px-6 py-4 text-right">Amount</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {expenses.map((expense) => (
-                  <tr
-                    key={expense.id}
-                    className="border-b border-gray-50 hover:bg-gray-50"
-                  >
-                    <td className="px-6 py-4 font-medium text-gray-800">
-                      {expense.title}
-                    </td>
-                    <td className="px-6 py-4">
-                      {/* Colored category badge */}
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${categoryColor[expense.category]}`}
-                      >
-                        {expense.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-gray-500">
-                      {expense.transactionDate}
-                    </td>
-                    <td className="px-6 py-4 text-right font-semibold text-red-500">
-                      Rs. {Number(expense.amount).toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      {/* Edit button */}
-                      <button
-                        onClick={() => handleEdit(expense)}
-                        className="text-blue-600 hover:text-blue-800 text-xs font-medium mr-3"
-                      >
-                        Edit
-                      </button>
-                      {/* Delete button */}
-                      <button
-                        onClick={() => handleDelete(expense.id)}
-                        className="text-red-500 hover:text-red-700 text-xs font-medium"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {/* This Month Section */}
+            <div className="space-y-3">
+              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">
+                This Month
+              </h2>
+              {thisMonthExpenses.length === 0 ? (
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                  <p className="text-slate-400 text-sm">No expenses recorded this month.</p>
+                </div>
+              ) : (
+                renderTable(thisMonthExpenses)
+              )}
+            </div>
+
+            {/* Last Months Section */}
+            {lastMonthsExpenses.length > 0 && (
+              <div className="space-y-3">
+                <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider">
+                  Last Months
+                </h2>
+                {renderTable(lastMonthsExpenses)}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
