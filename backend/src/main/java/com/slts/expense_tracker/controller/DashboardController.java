@@ -17,7 +17,9 @@ public class DashboardController {
 
     @GetMapping
     public ResponseEntity<DashboardResponse> getDashboard(
-            @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(dashboardService.getDashboard(user));
+            @AuthenticationPrincipal User user,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer year) {
+        return ResponseEntity.ok(dashboardService.getDashboard(user, month, year));
     }
 }
