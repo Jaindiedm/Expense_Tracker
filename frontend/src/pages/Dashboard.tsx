@@ -31,13 +31,19 @@ export default function Dashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch dashboard data from Spring Boot when page loads
+  // Default to current month and year
+  const now = new Date();
+  const [selectedMonth, setSelectedMonth] = useState(now.getMonth() + 1); // 1-12
+  const [selectedYear, setSelectedYear] = useState(now.getFullYear());
+
+  // Fetch dashboard data from Spring Boot when page loads or selection changes
   useEffect(() => {
-    api.get('/api/dashboard')
+    setLoading(true);
+    api.get(`/api/dashboard?month=${selectedMonth}&year=${selectedYear}`)
       .then(res => setData(res.data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [selectedMonth, selectedYear]);
 
   const savingsRate =
     data && data.totalIncome > 0
@@ -77,12 +83,48 @@ export default function Dashboard() {
             </p>
           </div>
 
-          {/* Balance pill */}
-          <div className="bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-6 py-4 min-w-[200px]">
-            <p className="text-green-200 text-xs font-medium uppercase tracking-widest mb-1">Net Balance</p>
-            <p className={`text-2xl font-extrabold ${(data?.balance ?? 0) >= 0 ? 'text-white' : 'text-red-300'}`}>
-              {fmt(data?.balance)}
-            </p>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            {/* Month/Year selector dropdowns */}
+            <div className="flex items-center gap-2">
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                className="bg-white/15 backdrop-blur border border-white/20 text-white rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-green-400 cursor-pointer"
+              >
+                <option value={1} className="text-slate-800">Jan</option>
+                <option value={2} className="text-slate-800">Feb</option>
+                <option value={3} className="text-slate-800">Mar</option>
+                <option value={4} className="text-slate-800">Apr</option>
+                <option value={5} className="text-slate-800">May</option>
+                <option value={6} className="text-slate-800">Jun</option>
+                <option value={7} className="text-slate-800">Jul</option>
+                <option value={8} className="text-slate-800">Aug</option>
+                <option value={9} className="text-slate-800">Sep</option>
+                <option value={10} className="text-slate-800">Oct</option>
+                <option value={11} className="text-slate-800">Nov</option>
+                <option value={12} className="text-slate-800">Dec</option>
+              </select>
+
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                className="bg-white/15 backdrop-blur border border-white/20 text-white rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-green-400 cursor-pointer"
+              >
+                {Array.from({ length: 5 }, (_, i) => now.getFullYear() - 2 + i).map((yr) => (
+                  <option key={yr} value={yr} className="text-slate-800">
+                    {yr}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Balance pill */}
+            <div className="bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-6 py-4 min-w-[200px]">
+              <p className="text-green-200 text-xs font-medium uppercase tracking-widest mb-1">Net Balance</p>
+              <p className={`text-2xl font-extrabold ${(data?.balance ?? 0) >= 0 ? 'text-white' : 'text-red-300'}`}>
+                {fmt(data?.balance)}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -118,7 +160,9 @@ export default function Dashboard() {
 
           {/* Monthly split */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-4">
-            <p className="text-sm font-semibold text-slate-600">This Month</p>
+            <p className="text-sm font-semibold text-slate-600">
+              For {new Date(selectedYear, selectedMonth - 1).toLocaleString('default', { month: 'long', year: 'numeric' })}
+            </p>
             <div className="flex justify-between">
               <div>
                 <p className="text-xs text-slate-400 mb-0.5">Income</p>

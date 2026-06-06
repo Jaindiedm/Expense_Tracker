@@ -32,11 +32,15 @@ public class DashboardService {
      - Recent transactions
      */
 
-    public DashboardResponse getDashboard(User user) {
-        // Get current date and boundaries of this month
-        LocalDate now = LocalDate.now();
-        LocalDate startOfMonth = now.withDayOfMonth(1);
-        LocalDate endOfMonth = now.withDayOfMonth(now.lengthOfMonth());
+    public DashboardResponse getDashboard(User user, Integer month, Integer year) {
+        LocalDate dateForMonth;
+        if (month != null && year != null && month >= 1 && month <= 12 && year >= 1900 && year <= 2100) {
+            dateForMonth = LocalDate.of(year, month, 1);
+        } else {
+            dateForMonth = LocalDate.now();
+        }
+        LocalDate startOfMonth = dateForMonth.withDayOfMonth(1);
+        LocalDate endOfMonth = dateForMonth.withDayOfMonth(dateForMonth.lengthOfMonth());
 
         // Fetch total income & expenses
         BigDecimal totalIncome = incomeRepository.sumAmountByUser(user);

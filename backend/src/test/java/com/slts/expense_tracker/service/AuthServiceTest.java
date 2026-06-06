@@ -50,6 +50,7 @@ class AuthServiceTest {
         registerRequest.setName("Test User");
         registerRequest.setEmail("test@test.com");
         registerRequest.setPassword("password123");
+        registerRequest.setAddress("123 Test St, Test City");
 
         loginRequest = new LoginRequest();
         loginRequest.setEmail("test@test.com");
@@ -60,6 +61,7 @@ class AuthServiceTest {
         existingUser.setName("Test User");
         existingUser.setEmail("test@test.com");
         existingUser.setPassword("hashedPassword");
+        existingUser.setAddress("123 Test St, Test City");
     }
 
     @Test

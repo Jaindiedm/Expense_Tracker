@@ -6,6 +6,7 @@ import api from '../api/axios';
 interface UserProfile {
   name: string;
   email: string;
+  address: string;
   createdAt: string;
 }
 
@@ -83,6 +84,12 @@ export default function Profile() {
             <div className="flex items-center justify-between py-3 border-b border-slate-50">
               <span className="text-sm text-slate-400 font-medium w-32">Email Address</span>
               <span className="text-sm font-semibold text-slate-800">{profile?.email}</span>
+            </div>
+
+            {/* Address */}
+            <div className="flex items-center justify-between py-3 border-b border-slate-50">
+              <span className="text-sm text-slate-400 font-medium w-32">Address</span>
+              <span className="text-sm font-semibold text-slate-800">{profile?.address}</span>
             </div>
 
             {/* Member since */}
