@@ -7,6 +7,7 @@ export default function Register() {
   // State hooks for storing user registration inputs
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -36,7 +37,7 @@ export default function Register() {
     try {
       // Call the Spring Boot backend registration endpoint with user credentials
       const res = await api.post('/api/auth/register', {
-        name, email, password
+        name, email, password, address
       });
 
       // Automatically log the user in using the returned JWT/session data
@@ -94,6 +95,19 @@ export default function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
+              required
+              disabled={loading}
+              className="w-full px-4 py-3 bg-slate-50 focus:bg-white text-slate-700 placeholder-slate-400 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a6b4a]/20 focus:border-[#1a6b4a] transition duration-150"
+            />
+          </div>
+
+          {/* Address Field */}
+          <div>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Address"
               required
               disabled={loading}
               className="w-full px-4 py-3 bg-slate-50 focus:bg-white text-slate-700 placeholder-slate-400 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a6b4a]/20 focus:border-[#1a6b4a] transition duration-150"
