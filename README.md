@@ -28,7 +28,7 @@ A full-stack expense tracking web application.
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/Expense_Tracker.git
+git clone https://github.com/Jaindiedm/Expense_Tracker
 cd Expense_Tracker
 ```
 
